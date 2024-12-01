@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-lefts = []
-freq = Hash.new(0)
-$stdin.each_line
-      .map { |line| line.chomp.split.map(&:to_i) }
-      .each do |l, r|
-        lefts << l
-        freq[r] += 1
-      end
+lefts, freq = $stdin.each_line
+                    .map { |line| line.chomp.split.map(&:to_i) }
+                    .each_with_object([[], Hash.new(0)]) do |els, os|
+                      os.first << els.shift
+                      os.last[els.shift] += 1
+                    end
 
 puts lefts.map { |l| l * freq[l] }.sum
