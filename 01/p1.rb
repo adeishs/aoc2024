@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-lefts, rights = $stdin.each_line
-                      .flat_map { |line| line.chomp.split.map(&:to_i) }
-                      .partition.with_index { |_, i| i.even? }
-                      .map(&:sort)
+ids = [[], []]
+$stdin.each_line { |l| l.split.each.with_index { |v, i| ids[i] << v.to_i } }
 
-puts lefts.map.with_index { |l, i| (l - rights[i]).abs }.sum
+puts ids[0].sort.zip(ids[1].sort).map { |l, r| (l - r).abs }.sum
