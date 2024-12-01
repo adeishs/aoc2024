@@ -2,8 +2,7 @@
 # frozen_string_literal: true
 
 lefts, rights = $stdin.each_line
-                      .map { |line| line.chomp.split.map(&:to_i) }
-                      .flatten
+                      .flat_map { |line| line.chomp.split.map(&:to_i) }
                       .partition.with_index { |_, i| i.even? }
                       .map(&:sort)
 
