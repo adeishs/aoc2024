@@ -1,24 +1,20 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-def parse(line)
-  line.split
-      .map(&:to_i)
-      .each_cons(2)
-      .each_with_object([Hash.new(0), Hash.new(0)]) do |els, os|
-        os.first[(els.last - els.first).abs] = true
-        os.last[els.last <=> els.first] = true
-      end
+def get_levels(line)
+  line.split.map(&:to_i)
 end
 
-def safe?(line)
-  diff, dir = parse(line)
+def safe?(levels)
+  a, b = levels[0..1]
+  return false unless (b - a).abs.between?(1, 3)
 
-  dir.keys.size <= 1 &&
-    dir.keys.none?(&:zero?) &&
-    diff.keys.none? { |k| k > 3 }
+  s = b <=> a
+  levels[1...levels.size].each_cons(2)
+                         .all? { |x, y| (y <=> x) == s && (y - x).abs <= 3 }
 end
 
 puts $stdin.each_line
-           .select { |l| safe?(l) }
+           .map { |l| get_levels(l) }
+           .select { |ls| safe?(ls) }
            .size
