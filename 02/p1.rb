@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-def get_levels(line)
-  line.split.map(&:to_i)
-end
-
 def safe?(levels)
   a, b = levels[0..1]
   return false unless (b - a).abs.between?(1, 3)
@@ -15,6 +11,5 @@ def safe?(levels)
 end
 
 puts $stdin.each_line
-           .map { |l| get_levels(l) }
-           .select { |ls| safe?(ls) }
+           .select { |line| safe?(line.split.map(&:to_i)) }
            .size
