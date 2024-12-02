@@ -11,11 +11,10 @@ def safe?(levels)
 end
 
 def dampened_safe?(levels)
-  return true if safe?(levels)
-
-  (0...levels.size).any? do |i|
-    safe?(levels[0...i] + levels[i + 1...levels.size])
-  end
+  safe?(levels) ||
+    (0...levels.size).any? do |i|
+      safe?(levels[0...i] + levels[i + 1...levels.size])
+    end
 end
 
 puts $stdin.each_line
