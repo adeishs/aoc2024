@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-F = {
-  'do()' => true,
-  "don't()" => false
-}.freeze
-
 def get_tokens(line)
-  line.scan(/(mul\(\d+,\d+\)|do\(\)|don't\(\))/).flatten
+  line.scan(/((mul)\((\d+),(\d+)\)|do\(\)|don't\(\))/)
+      .map do |els|
+        op, _, *args = els
+        op.start_with?('m') ? ['m', *args] : [op[0...op.size - 2]]
+      end
 end
 
-def parse_token(token, factor)
-  return [0, F[token]] unless token.start_with?('m')
-  return [0, factor] unless factor
+def parse_token(tokens, exec_flag)
+  op, *args = tokens
+  return [0, op == 'do'] if op != 'm'
+  return [0, exec_flag] unless exec_flag
 
-  [token.scan(/\d+/).map(&:to_i).reduce(:*), factor]
+  [args.map(&:to_i).reduce(:*), exec_flag]
 end
 
 def parse(line)
