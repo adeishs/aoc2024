@@ -2,23 +2,26 @@
 # frozen_string_literal: true
 
 F = {
-  'do()' => 1,
-  "don't()" => 0
+  'do()' => true,
+  "don't()" => false
 }.freeze
 
 def get_tokens(line)
   line.scan(/(mul\(\d+,\d+\)|do\(\)|don't\(\))/).flatten
 end
 
+def parse_token(token, factor)
+  return [0, F[token]] unless token.start_with?('m')
+  return [0, factor] unless factor
+
+  [token.scan(/\d+/).map(&:to_i).reduce(:*), factor]
+end
+
 def parse(line)
-  f = 1
+  f = true
   get_tokens(line).map do |t|
-    if t.start_with?('m')
-      f * t.scan(/\d+/).map(&:to_i).reduce(:*)
-    else
-      f = F[t]
-      0
-    end
+    m, f = parse_token(t, f)
+    m
   end
 end
 
