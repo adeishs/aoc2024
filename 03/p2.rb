@@ -7,7 +7,7 @@ F = {
 }.freeze
 
 def get_tokens(line)
-  line.scan(/(mul\(\d+,\d+\)|do\(\)|don't\(\))/).map(&:shift)
+  line.scan(/(mul\(\d+,\d+\)|do\(\)|don't\(\))/).flatten
 end
 
 def parse(line)
