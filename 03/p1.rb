@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 def parse(line)
-  line.scan(/mul\(\d+,\d+\)/)
-      .map { |m| m.scan(/\d+/).map(&:to_i).reduce(:*) }
+  line.scan(/mul\((\d+),(\d+)\)/)
+      .map { |ns| ns.map(&:to_i).reduce(:*) }
       .sum
 end
 
