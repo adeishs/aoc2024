@@ -2,15 +2,12 @@
 # frozen_string_literal: true
 
 DIRS = [-1, 1].repeated_permutation(2).map { |cs| Complex(*cs) }
+TARGET = { 1 => 'M', -1 => 'S' }.freeze
 
 def scan_dir(rows, candidate_coord, dir)
-  [dir, dir * (0 + 1i)].all? do |d|
-    m_pos = candidate_coord + d
-    s_pos = candidate_coord - d
-
-    rows[m_pos.imag][m_pos.real] == 'M' &&
-      rows[s_pos.imag][s_pos.real] == 'S'
-  end
+  [1, 0 + 1i].product(TARGET.keys)
+             .map { |d, s| [candidate_coord + d * s * dir, TARGET[s]] }
+             .all? { |pos, ch| rows[pos.imag][pos.real] == ch }
 end
 
 def scan_dirs(rows, coord)
