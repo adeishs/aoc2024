@@ -13,7 +13,7 @@ def scan_dir(rows, candidate_coord, dir)
   }
   (0...TARGET.size).map { |i| candidate_coord + i * dir }
                    .select { |c| in_range.call(c) }
-                   .map { |c| rows[c.imag][c.real, 1] }
+                   .map { |c| rows[c.imag][c.real] }
                    .join
 end
 
@@ -24,8 +24,7 @@ end
 def find_targets(rows)
   rows.map.with_index do |row, r|
     (0...row.size).find_all { |c| row[c] == 'X' }.map { |c| Complex.new(c, r) }
-  end.flatten
-      .map { |coord| scan_dirs(rows, coord) }
+  end.flatten.map { |coord| scan_dirs(rows, coord) }
 end
 
 rows = $stdin.each_line.map(&:chomp)
