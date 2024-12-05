@@ -34,14 +34,11 @@ def correct?(post, pre, pages)
 end
 
 def correct_order(post, updates)
-  swap_pages = lambda { |i, j|
-    updates[j], updates[i] = updates[i], updates[j]
-  }
   (0...updates.size - 1).each do |i|
     (i + 1...updates.size).each do |j|
       next unless post[updates[i]]&.member?(updates[j])
 
-      swap_pages.call(i, j)
+      updates[j], updates[i] = updates[i], updates[j]
     end
   end
 
