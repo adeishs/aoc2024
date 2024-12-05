@@ -21,10 +21,16 @@ def parse_input(inp)
 end
 
 def correct?(post, pre, pages)
-  pages.reject.with_index do |page, i|
-    pages[0...i].all? { |l| pre[page]&.member?(l) } &&
-      pages[i + 1...pages.size].all? { |l| post[page]&.member?(l) }
-  end.empty?
+  pages.each.with_index do |page, i|
+    return false unless pages[0...i].all? do |l|
+                          pre[page]&.member?(l)
+                        end &&
+                        pages[i + 1...pages.size].all? do |l|
+                          post[page]&.member?(l)
+                        end
+  end
+
+  true
 end
 
 def correct_mids(post, pre, updates)
