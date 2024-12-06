@@ -20,14 +20,14 @@ def parse_input(inp)
   [post, pre, updates]
 end
 
+def correct_pages?(adj, pages)
+  pages.all? { |l| adj&.member?(l) }
+end
+
 def correct?(post, pre, pages)
   pages.each.with_index do |page, i|
-    return false unless pages[0...i].all? do |l|
-                          pre[page]&.member?(l)
-                        end &&
-                        pages[i + 1...pages.size].all? do |l|
-                          post[page]&.member?(l)
-                        end
+    return false unless correct_pages?(pre[page], pages[0...i]) &&
+                        correct_pages?(post[page], pages[i + 1...pages.size])
   end
 
   true
