@@ -24,6 +24,19 @@ def put_obst(rows, pos)
   end
 end
 
+def move(rows, curr_pos, dir)
+  new_pos = curr_pos + dir
+  return nil unless new_pos.imag.between?(0, rows.size - 1) &&
+                    new_pos.real.between?(0, rows.first.size - 1)
+
+  if OBST[rows[new_pos.imag][new_pos.real]]
+    dir *= 0 + 1i
+  else
+    curr_pos += dir
+  end
+  [curr_pos, dir]
+end
+
 def loop?(rows, curr_pos)
   visiteds = Set.new
   dir = 0 + -1i
@@ -32,26 +45,18 @@ def loop?(rows, curr_pos)
     return true if visiteds.member?(curr_pos_dir)
 
     visiteds << curr_pos_dir
-    new_pos = curr_pos + dir
-    break unless new_pos.imag.between?(0, rows.size - 1) &&
-                 new_pos.real.between?(0, rows.first.size - 1)
-
-    if OBST[rows[new_pos.imag][new_pos.real]]
-      dir *= 0 + 1i
-    else
-      curr_pos += dir
-    end
+    curr_pos, dir = move(rows, curr_pos, dir)
+    break unless curr_pos
   end
 
   false
 end
 
 def get_possible_loop_count(rows)
-  start_pos = find_start(rows)
   [
     *0...rows.size
   ].product([*0...rows.first.size])
-    .select { |y, x| loop?(put_obst(rows, Complex(x, y)), start_pos) }
+    .select { |y, x| loop?(put_obst(rows, Complex(x, y)), find_start(rows)) }
     .size
 end
 
