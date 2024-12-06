@@ -30,10 +30,9 @@ def run_guard(rows)
   curr_pos = find_start(rows)
   visiteds = Set.new
   dir = 0 + -1i
-  loop do
+  while curr_pos
     visiteds << curr_pos
     curr_pos, dir = move(rows, curr_pos, dir)
-    break unless curr_pos
   end
 
   visiteds.size

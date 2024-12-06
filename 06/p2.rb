@@ -40,13 +40,12 @@ end
 def loop?(rows, curr_pos)
   visiteds = Set.new
   dir = 0 + -1i
-  loop do
+  while curr_pos
     curr_pos_dir = [curr_pos, dir]
     return true if visiteds.member?(curr_pos_dir)
 
     visiteds << curr_pos_dir
     curr_pos, dir = move(rows, curr_pos, dir)
-    break unless curr_pos
   end
 
   false
