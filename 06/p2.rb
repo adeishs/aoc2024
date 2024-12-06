@@ -24,12 +24,14 @@ def put_obst(rows, pos)
   end
 end
 
-def has_loop?(rows, curr_pos)
+def loop?(rows, curr_pos)
   visiteds = Set.new
   dir = 0 + -1i
   loop do
-    return true if visiteds.member?([curr_pos, dir])
-    visiteds << [curr_pos, dir]
+    curr_pos_dir = [curr_pos, dir]
+    return true if visiteds.member?(curr_pos_dir)
+
+    visiteds << curr_pos_dir
     new_pos = curr_pos + dir
     break unless new_pos.imag.between?(0, rows.size - 1) &&
                  new_pos.real.between?(0, rows.first.size - 1)
@@ -46,10 +48,11 @@ end
 
 def get_possible_loop_count(rows)
   start_pos = find_start(rows)
-  [*0...rows.size].product([*0...rows.first.size])
-                  .select do |y, x|
-                    has_loop?(put_obst(rows, Complex(x, y)), start_pos)
-                  end.size
+  [
+    *0...rows.size
+  ].product([*0...rows.first.size])
+    .select { |y, x| loop?(put_obst(rows, Complex(x, y)), start_pos) }
+    .size
 end
 
 puts get_possible_loop_count($stdin.each_line.map(&:chomp))
