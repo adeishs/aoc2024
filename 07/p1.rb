@@ -12,10 +12,8 @@ end
 
 def alt_found?(operators, equation)
   result = 0
-  (['+'] + operators).each.with_index do |o, i|
-    result = result.send(o, equation[:operands][i])
-  end
-
+  (['+'] + operators).zip(equation[:operands])
+                     .each { |op, num| result = result.send(op, num) }
   result == equation[:test]
 end
 
