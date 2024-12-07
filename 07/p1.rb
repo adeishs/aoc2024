@@ -11,10 +11,9 @@ def parse(line)
 end
 
 def alt_found?(operators, equation)
-  result = 0
-  (['+'] + operators).zip(equation[:operands])
-                     .each { |op, num| result = result.send(op, num) }
-  result == equation[:test]
+  equation[:test] ==
+    (['+'] + operators).zip(equation[:operands])
+                       .reduce(0) { |test, ops| test.send(*ops) }
 end
 
 def tested?(equation)

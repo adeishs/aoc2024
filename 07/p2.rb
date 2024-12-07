@@ -10,17 +10,17 @@ def parse(line)
   { test: test.to_i, operands: operands }
 end
 
-def calc(acc, operator, num)
-  return "#{acc}#{num}".to_i if operator == '|'
+def calc(acc, ops)
+  operator, operand = ops
+  return "#{acc}#{operand}".to_i if operator == '|'
 
-  acc.send(operator, num)
+  acc.send(operator, operand)
 end
 
 def alt_found?(operators, equation)
-  result = 0
-  (['+'] + operators).zip(equation[:operands])
-                     .each { |op, num| result = calc(result, op, num) }
-  result == equation[:test]
+  equation[:test] ==
+    (['+'] + operators).zip(equation[:operands])
+                       .reduce(0) { |test, ops| calc(test, ops) }
 end
 
 def tested?(equation)
