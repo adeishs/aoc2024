@@ -10,7 +10,7 @@ def parse(line)
   { test: test.to_i, operands: operands }
 end
 
-def calculate(operators, equation)
+def alt_found?(operators, equation)
   result = 0
   (['+'] + operators).each.with_index do |o, i|
     result = if o == '|'
@@ -20,16 +20,12 @@ def calculate(operators, equation)
              end
   end
 
-  result
+  result == equation[:test]
 end
 
 def tested?(equation)
   OPS.repeated_permutation(equation[:operands].size - 1)
-     .each do |ops|
-       return true if equation[:test] == calculate(ops, equation)
-     end
-
-  false
+     .any? { |ops| alt_found?(ops, equation) }
 end
 
 puts $stdin.each_line.map { |l| parse(l.chomp) }
