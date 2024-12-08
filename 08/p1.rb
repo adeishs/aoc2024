@@ -32,7 +32,7 @@ def get_antinodes(rows)
   }
   antennas = get_antennas(rows)
   antinodes = Set.new
-  antennas.each do |_, locs|
+  antennas.values.each do |locs|
     locs.to_a
         .permutation(2)
         .each do |pair_locs|
