@@ -28,7 +28,7 @@ end
 def get_antinodes(rows)
   max = Complex(rows.first.size - 1, rows.size - 1)
   in_range = lambda { |l|
-    l.imag.between?(0, max.imag) && l.real.between(0, max.real)
+    l.imag.between?(0, max.imag) && l.real.between?(0, max.real)
   }
   antennas = get_antennas(rows)
   antinodes = Set.new
