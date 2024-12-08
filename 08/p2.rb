@@ -17,11 +17,8 @@ def get_antennas(rows)
   rows.map
       .with_index { |tiles, y| get_antenna_loc(tiles, y) }
       .reject(&:empty?)
-      .each_with_object({}) do |a_locs, antenna|
-        a_locs.each_slice(2) do |a_name, loc|
-          antenna[a_name] ||= Set.new
-          antenna[a_name] << loc
-        end
+      .each_with_object(Hash.new { |h, k| h[k] = Set.new }) do |a_locs, antenna|
+        a_locs.each_slice(2) { |a_name, loc| antenna[a_name] << loc }
       end
 end
 
@@ -30,22 +27,19 @@ def get_antinodes(rows)
   in_range = lambda { |l|
     l.imag.between?(0, max.imag) && l.real.between?(0, max.real)
   }
-  antennas = get_antennas(rows)
-  antinodes = Set.new
-  antennas.values.each do |locs|
-    locs.to_a
-        .permutation(2)
-        .each do |pair_locs|
-          d = pair_locs[1] - pair_locs[0]
-          an_loc = pair_locs[0] + d
-          while in_range.call(an_loc)
-            antinodes << an_loc
-            an_loc += d
-          end
-        end
-  end
-
-  antinodes
+  get_antennas(rows).values
+                    .each_with_object(Set.new) do |locs, antinodes|
+                      locs.to_a
+                          .permutation(2)
+                          .each do |pair_locs|
+                            d = pair_locs[1] - pair_locs[0]
+                            an_loc = pair_locs[0] + d
+                            while in_range.call(an_loc)
+                              antinodes << an_loc
+                              an_loc += d
+                            end
+                          end
+                    end
 end
 
 puts get_antinodes($stdin.each_line.map(&:chomp)).size
