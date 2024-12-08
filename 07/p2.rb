@@ -23,12 +23,13 @@ def alt_found?(operators, equation)
                        .reduce(0) { |test, ops| calc(test, ops) }
 end
 
-def tested?(equation)
-  OPS.repeated_permutation(equation[:operands].size - 1)
-     .any? { |ops| alt_found?(ops, equation) }
+def test(equation)
+  return 0 if OPS.repeated_permutation(equation[:operands].size - 1)
+                 .none? { |ops| alt_found?(ops, equation) }
+
+  equation[:test]
 end
 
-puts $stdin.each_line.map { |l| parse(l.chomp) }
-           .select { |e| tested?(e) }
-           .map { |e| e[:test] }
+puts $stdin.each_line
+           .map { |l| test(parse(l.chomp)) }
            .sum
