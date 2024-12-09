@@ -8,7 +8,8 @@ def construct_blocks(disk_map)
           .flatten
 end
 
-def compact_blocks(blocks)
+def compact_blocks(disk_map)
+  blocks = construct_blocks(disk_map)
   max = blocks.size - 1
   new_blocks = []
   blocks.each
@@ -27,13 +28,8 @@ def compact_blocks(blocks)
   new_blocks
 end
 
-def calc_checksum(blocks)
-  blocks.map.with_index { |b, i| b * i }.sum
+def calc_checksum(disk_map)
+  compact_blocks(disk_map).map.with_index { |b, i| b * i }.sum
 end
 
-puts calc_checksum(
-  compact_blocks(
-    $stdin.each_line.map { |l| construct_blocks(l.chomp) }
-                    .flatten
-  )
-)
+puts calc_checksum($stdin.each_line.map(&:chomp).first)
