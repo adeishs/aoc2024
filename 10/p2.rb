@@ -19,13 +19,11 @@ heights = $stdin.each_line
                       end
                 end
 
-reachable_peaks = Hash.new { |h, k| h[k] = Set.new }
 trail_counts = Hash.new(0)
 
 9.downto(0).each do |h|
   locs[h].each do |loc|
     if h == 9
-      reachable_peaks[loc] = Set[loc]
       trail_counts[loc] = 1
     end
 
@@ -38,7 +36,6 @@ trail_counts = Hash.new(0)
             heights[ny][nx] == h - 1
         end
         .each do |next_loc|
-          reachable_peaks[next_loc] |= reachable_peaks[loc]
           trail_counts[next_loc] += trail_counts[loc]
         end
   end

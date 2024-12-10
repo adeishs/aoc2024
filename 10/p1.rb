@@ -26,7 +26,6 @@ trail_counts = Hash.new(0)
   locs[h].each do |loc|
     if h == 9
       reachable_peaks[loc] = Set[loc]
-      trail_counts[loc] = 1
     end
 
     DIRS.map { |d| loc + d }
@@ -39,7 +38,6 @@ trail_counts = Hash.new(0)
         end
         .each do |next_loc|
           reachable_peaks[next_loc] |= reachable_peaks[loc]
-          trail_counts[next_loc] += trail_counts[loc]
         end
   end
 end
