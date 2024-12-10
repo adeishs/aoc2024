@@ -47,7 +47,7 @@ def compact_blocks(disk_map)
     gap_idx = files[1...files.size].find_index do |f|
       f.id.nil? && f.sz >= files[file_idx].sz
     end
-    unless gap_idx.nil? || gap_idx >= file_idx
+    if (gap_idx || files.size) < file_idx
       gap_idx += 1
 
       files[file_idx].id = nil
