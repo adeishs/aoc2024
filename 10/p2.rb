@@ -23,9 +23,7 @@ trail_counts = Hash.new(0)
 
 9.downto(0).each do |h|
   locs[h].each do |loc|
-    if h == 9
-      trail_counts[loc] = 1
-    end
+    trail_counts[loc] = 1 if h == 9
 
     DIRS.map { |d| loc + d }
         .select do |next_loc|

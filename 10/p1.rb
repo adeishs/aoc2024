@@ -20,13 +20,10 @@ heights = $stdin.each_line
                 end
 
 reachable_peaks = Hash.new { |h, k| h[k] = Set.new }
-trail_counts = Hash.new(0)
 
 9.downto(0).each do |h|
   locs[h].each do |loc|
-    if h == 9
-      reachable_peaks[loc] = Set[loc]
-    end
+    reachable_peaks[loc] = Set[loc] if h == 9
 
     DIRS.map { |d| loc + d }
         .select do |next_loc|
