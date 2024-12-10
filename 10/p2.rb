@@ -5,12 +5,17 @@ require 'set'
 
 DIRS = [1, -1].map { |d| [d + 0i, d * 1i] }.flatten.freeze
 
-def reachable_loc?(heights, curr_height, next_loc)
+def reachable_loc?(heights, curr_loc, next_loc)
   nx = next_loc.real
   ny = next_loc.imag
   ny.between?(0, heights.size - 1) &&
     nx.between?(0, heights.first.size - 1) &&
-    heights[ny][nx] == curr_height - 1
+    heights[ny][nx] == heights[curr_loc.imag][curr_loc.real] - 1
+end
+
+def get_next_locs(heights, loc)
+  DIRS.map { |d| loc + d }
+      .select { |n| reachable_loc?(heights, loc, n) }
 end
 
 def count_trails(heights, locs)
@@ -20,9 +25,9 @@ def count_trails(heights, locs)
     locs[h].each do |loc|
       trail_counts[loc] = 1 if h == 9
 
-      DIRS.map { |d| loc + d }
-          .select { |next_loc| reachable_loc?(heights, h, next_loc) }
-          .each { |next_loc| trail_counts[next_loc] += trail_counts[loc] }
+      get_next_locs(
+        heights, loc
+      ).each { |next_loc| trail_counts[next_loc] += trail_counts[loc] }
     end
   end
 
