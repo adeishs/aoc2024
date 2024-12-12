@@ -5,21 +5,18 @@ require 'set'
 
 DIRS = [1, -1].map { |n| [n + 0i, n * 1i] }.flatten.freeze
 
-def in_map?(loc, max_loc)
-  %w[
-    imag real
-  ].all? { |m| loc.send(m).between?(0, max_loc.send(m)) }
-end
-
 def find_whole_region(plant, loc, plants, plant_locs)
   max_loc = Complex(plants.first.size - 1, plants.size - 1)
-
+  in_map = lambda { |loc|
+    %w[imag real].all? { |m| loc.send(m).between?(0, max_loc.send(m)) }
+  }
   DIRS.map { |d| loc + d }
+      .reject do |adj|
+        plant_locs.member?(adj) ||
+          !in_map.call(adj) ||
+          plants[adj.imag][adj.real] != plant
+      end
       .each do |adj|
-        next unless !plant_locs.member?(adj) &&
-                    in_map?(adj, max_loc) &&
-                    plants[adj.imag][adj.real] == plant
-
         plant_locs << adj
         plant_locs.merge(find_whole_region(plant, adj, plants, plant_locs))
       end
@@ -37,9 +34,7 @@ region_locs = {}
     start = Complex(x, y)
     next if visited_locs.member?(start)
 
-    plant = plants[y][x]
-    plant_locs = Set[start]
-    plant_locs = find_whole_region(plant, start, plants, plant_locs)
+    plant_locs = find_whole_region(plants[y][x], start, plants, Set[start])
     region_locs[start] = plant_locs
     visited_locs << plant_locs
   end
