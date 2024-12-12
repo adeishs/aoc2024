@@ -46,14 +46,12 @@ region_locs = {}
 end
 
 fences = region_locs.values.uniq.map do |plant_locs|
-  fence_cnt =
-    plant_locs.map do |loc|
-      DIRS.map { |d| loc + d }
-          .reject { |adj| in_map?(adj, max_loc) && plant_locs.member?(adj) }
-          .size
-    end.sum
-
-  { region_size: plant_locs.size, fence_cnt: fence_cnt }
+  {
+    region_size: plant_locs.size,
+    fence_cnt: plant_locs.map do |loc|
+                 DIRS.reject { |d| plant_locs.member?(loc + d) }.size
+               end.sum
+  }
 end
 
 puts fences.map { |f| f.values.reduce(1, :*) }.sum
