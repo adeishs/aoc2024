@@ -6,7 +6,7 @@ require 'set'
 BUTTON_RE = Regexp.new('X\+(\d+), Y\+(\d+)')
 PRIZE_RE = Regexp.new('X=(\d+), Y=(\d+)')
 TOKEN_COSTS = [3, 1].freeze
-ADJUSTMENT = 10000000000000
+ADJUSTMENT = 10_000_000_000_000
 
 def get_coord(line, regexp, adj)
   Complex(*line.scan(regexp).flatten.map { |c| c.to_i + adj })
@@ -28,13 +28,17 @@ def play_machine(machine)
   mp = machine[:prize]
   buttons = machine[:buttons]
 
-  a = 1.0 * (mp.real * buttons[1].imag - mp.imag * buttons[1].real) /
-    (buttons[0].real * buttons[1].imag - buttons[0].imag * buttons[1].real)
-  b = 1.0 * (mp.imag * buttons[0].real - mp.real * buttons[0].imag) /
-    (buttons[0].real * buttons[1].imag - buttons[0].imag * buttons[1].real)
+  # use Cramer’s rule
+  det = buttons[0].real * buttons[1].imag - buttons[0].imag * buttons[1].real
 
-  return (3 * a + b).to_i if a == a.to_i && b == b.to_i
-  0
+  sols = [
+    mp.real * buttons[1].imag - mp.imag * buttons[1].real,
+    buttons[0].real * mp.imag - buttons[0].imag * mp.real
+  ].map { |s| s.to_f / det }
+
+  return 0 if sols.any? { |s| s != s.to_i }
+
+  TOKEN_COSTS.zip(sols.map(&:to_i)).map { |fs| fs.reduce(1, :*) }.sum
 end
 
 puts parse($stdin.read).map { |m| play_machine(m) }.sum
