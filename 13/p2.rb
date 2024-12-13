@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'set'
-
 BUTTON_RE = Regexp.new('X\+(\d+), Y\+(\d+)')
 PRIZE_RE = Regexp.new('X=(\d+), Y=(\d+)')
 TOKEN_COSTS = [3, 1].freeze
