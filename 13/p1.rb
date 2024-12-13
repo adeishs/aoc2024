@@ -39,15 +39,17 @@ def play_machine(machine)
   mp = machine[:prize]
   buttons = machine[:buttons]
 
-  [*0..100].repeated_permutation(2)
-           .each do |ns|
-             c = cmp(ns.zip(buttons).map { |fs| fs.reduce(1, :*) }.sum, mp)
+  # use Cramer’s rule
+  det = buttons[0].real * buttons[1].imag - buttons[0].imag * buttons[1].real
 
-             return calc_token_cost(ns) if c.zero?
-             next if c.positive?
-           end
+  sols = [
+    mp.real * buttons[1].imag - mp.imag * buttons[1].real,
+    buttons[0].real * mp.imag - buttons[0].imag * mp.real
+  ].map { |s| s.to_f / det }
 
-  0
+  return 0 if sols.any? { |s| s != s.to_i }
+
+  TOKEN_COSTS.zip(sols.map(&:to_i)).map { |fs| fs.reduce(1, :*) }.sum
 end
 
 puts parse($stdin.read).map { |m| play_machine(m) }.sum
