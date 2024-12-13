@@ -34,6 +34,7 @@ def play_machine(machine)
     buttons[0].real * mp.imag - buttons[0].imag * mp.real
   ].map { |s| s.to_f / det }
 
+  # accept only round-number solutions
   return 0 if sols.any? { |s| s != s.to_i }
 
   TOKEN_COSTS.zip(sols.map(&:to_i)).map { |fs| fs.reduce(1, :*) }.sum
