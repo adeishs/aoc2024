@@ -23,18 +23,6 @@ def parse(inp)
   inp.split("\n\n").map { |machine_str| parse_machine(machine_str) }
 end
 
-def cmp(button, prize)
-  if button.real == prize.real
-    button.imag <=> prize.imag
-  else
-    button.real <=> prize.real
-  end
-end
-
-def calc_token_cost(num_of_presses)
-  num_of_presses.zip(TOKEN_COSTS).map { |fs| fs.reduce(1, :*) }.sum
-end
-
 def play_machine(machine)
   mp = machine[:prize]
   buttons = machine[:buttons]
