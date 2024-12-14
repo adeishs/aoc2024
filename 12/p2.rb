@@ -44,14 +44,20 @@ fences = region_locs.values.uniq.map do |plant_locs|
   side_cnt = 0
   plant_locs.each do |loc|
     plants[loc.imag][loc.real]
-    side_cnt += DIRS.map do |d|
-      adjs = [loc + d, loc + d * (0 + 1i)]
 
-      if adjs.all? { |a| !plant_locs.member?(a) } ||
-         (
-           adjs.all? { |a| plant_locs.member?(a) } &&
-             !plant_locs.member?(loc + d + d * (0 + 1i))
-         )
+    # find the number of sides by counting the number of corners
+    side_cnt += DIRS.map do |d|
+      sides = [d, d * (0 + 1i)]
+      adjs = sides.map { |s| loc + s }
+
+      if (
+          # 90° angle from inside the region
+          adjs.all? { |a| !plant_locs.member?(a) }
+        ) || (
+          # 90° angle from outside the region
+          adjs.all? { |a| plant_locs.member?(a) } &&
+          !plant_locs.member?(loc + sides.sum)
+        )
         1
       else
         0
@@ -61,7 +67,7 @@ fences = region_locs.values.uniq.map do |plant_locs|
 
   {
     region_size: plant_locs.size,
-    side_cnt: s
+    side_cnt: side_cnt
   }
 end
 
