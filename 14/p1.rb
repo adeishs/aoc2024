@@ -3,16 +3,14 @@
 
 ROBOT_RE = Regexp.new('^p=(\d+),(\d+) v=(-?\d+),(-?\d+)$')
 SPACE_DIM = 101 + 103i
-MID_POINT = Complex(SPACE_DIM.real / 2, SPACE_DIM.imag / 2)
+MID_POINT = Complex(*SPACE_DIM.rect.map { |n| n / 2 })
 
 def parse_robot(line)
   nums = line.scan(ROBOT_RE).flatten.map(&:to_i)
   {
     p: Complex(*nums.shift(2)),
     v: Complex(
-      *nums.shift(2)
-           .zip([SPACE_DIM.real, SPACE_DIM.imag])
-           .map { |ns| ns.sum % ns.last }
+      *nums.shift(2).zip(SPACE_DIM.rect).map { |ns| ns.sum % ns.last }
     )
   }
 end
@@ -27,7 +25,7 @@ robots = $stdin.each_line.map { |l| parse_robot(l.chomp) }
 robot_cnt =
   robots.each_with_object(Hash.new(0)) do |robot, o|
     loc = robot[:p] + 100 * robot[:v]
-    o[Complex(loc.real % SPACE_DIM.real, loc.imag % SPACE_DIM.imag)] += 1
+    o[Complex(*loc.rect.zip(SPACE_DIM.rect).map { |l, s| l % s })] += 1
   end
 
 quadrant_cnts =
