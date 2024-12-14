@@ -29,13 +29,20 @@ end
 
 robots = $stdin.each_line.map { |l| parse_robot(l.chomp) }
 (1..10_000).each do |s|
-  robot_cnt =
-    robots.each_with_object(Hash.new(0)) do |robot, o|
-      loc = robot[:p] + s * robot[:v]
-      o[Complex(loc.real % SPACE_DIM.real, loc.imag % SPACE_DIM.imag)] += 1
-    end
+  robot_cnt = Hash.new(0)
 
-  next if robot_cnt.values.any? { |c| c > 1 }
+  found = true
+  robots.each do |robot|
+    loc = robot[:p] + s * robot[:v]
+    new_loc = Complex(loc.real % SPACE_DIM.real, loc.imag % SPACE_DIM.imag)
+    robot_cnt[new_loc] += 1
+    if robot_cnt[new_loc] > 1
+      found = false
+      break
+    end
+  end
+
+  next unless found
 
   puts get_robot_grid(robot_cnt)
   puts s
