@@ -3,7 +3,7 @@
 
 ROBOT_RE = Regexp.new('^p=(\d+),(\d+) v=(-?\d+),(-?\d+)$')
 SPACE_DIM = 101 + 103i
-CELL = { 0 => '.', 1 => '#' }.freeze
+CELL = %w[. #].freeze
 
 def parse_robot(line)
   nums = line.scan(ROBOT_RE).flatten.map(&:to_i)
