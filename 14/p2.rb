@@ -3,8 +3,7 @@
 
 ROBOT_RE = Regexp.new('^p=(\d+),(\d+) v=(-?\d+),(-?\d+)$')
 SPACE_DIM = 101 + 103i
-MID_POINT = Complex(SPACE_DIM.real / 2, SPACE_DIM.imag / 2)
-CELL = { false => '.', true => '#' }.freeze
+CELL = { 0 => '.', 1 => '#' }.freeze
 
 def parse_robot(line)
   nums = line.scan(ROBOT_RE).flatten.map(&:to_i)
@@ -20,10 +19,7 @@ end
 
 def get_robot_grid(cnt)
   (0...SPACE_DIM.imag).map do |y|
-    (
-      (0...SPACE_DIM.real).map { |x| CELL[cnt[Complex(x, y)].positive?] } +
-        ["\n"]
-    ).join
+    ((0...SPACE_DIM.real).map { |x| CELL[cnt[Complex(x, y)]] } + ["\n"]).join
   end
 end
 
