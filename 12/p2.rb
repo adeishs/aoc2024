@@ -24,6 +24,22 @@ def find_whole_region(plant, loc, plants, plant_locs)
   plant_locs
 end
 
+def find_angles(plant_locs, loc)
+  DIRS.map do |d|
+    sides = [d, d * (0 + 1i)]
+    adjs = sides.map { |s| loc + s }
+
+    (
+      # 90° angle from inside the region
+      adjs.all? { |a| !plant_locs.member?(a) }
+    ) || (
+      # 90° angle from outside the region
+      adjs.all? { |a| plant_locs.member?(a) } &&
+      !plant_locs.member?(loc + sides.sum)
+    )
+  end
+end
+
 plants = $stdin.each_line.map(&:chomp)
 max_loc = Complex(plants.first.size - 1, plants.size - 1)
 visited_locs = Set.new
@@ -41,33 +57,12 @@ region_locs = {}
 end
 
 fences = region_locs.values.uniq.map do |plant_locs|
-  side_cnt = 0
-  plant_locs.each do |loc|
-    plants[loc.imag][loc.real]
-
-    # find the number of sides by counting the number of corners
-    side_cnt += DIRS.map do |d|
-      sides = [d, d * (0 + 1i)]
-      adjs = sides.map { |s| loc + s }
-
-      if (
-          # 90° angle from inside the region
-          adjs.all? { |a| !plant_locs.member?(a) }
-        ) || (
-          # 90° angle from outside the region
-          adjs.all? { |a| plant_locs.member?(a) } &&
-          !plant_locs.member?(loc + sides.sum)
-        )
-        1
-      else
-        0
-      end
-    end.sum
-  end
-
   {
     region_size: plant_locs.size,
-    side_cnt: side_cnt
+    side_cnt:
+      # find the number of sides by counting the number of corners
+      plant_locs.map { |l| find_angles(plant_locs, l).select { |a| a }.size }
+                .sum
   }
 end
 
