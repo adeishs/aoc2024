@@ -83,8 +83,7 @@ def move_robot(loc, dir, rows, max_loc)
   # move and nothing else if empty
   return [nl, rows] if obj_at?(rows, nl, EMPTY)
 
-  nl, rows = move_box(rows, loc, dir, max_loc)
-  [nl, rows]
+  move_box(rows, loc, dir, max_loc)
 end
 
 def run_warehouse(warehouse)
