@@ -48,9 +48,6 @@ end
 
 def move_box(rows, loc, dir)
   nl = loc + dir
-  # no-op if hitting a wall
-  return [loc, rows] if obj_at?(rows, nl, WALL)
-
   empty_found = false
   empty_loc = nl
   until empty_found
