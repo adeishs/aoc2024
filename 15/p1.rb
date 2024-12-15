@@ -66,13 +66,9 @@ def move_box(rows, loc, dir, max_loc)
     end
   end
 
-  if empty_found
-    rows = update_tile(rows, empty_loc, BOX)
-    rows = update_tile(rows, nl, EMPTY)
-    return [nl, rows]
-  end
+  return [loc, rows] unless empty_found
 
-  [loc, rows]
+  [nl, update_tile(update_tile(rows, empty_loc, BOX), nl, EMPTY)]
 end
 
 def move_robot(loc, dir, rows, max_loc)
