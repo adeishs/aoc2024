@@ -26,9 +26,10 @@ def parse_input(inp)
 
   rows = map_str.split("\n")
   init_loc = Complex(
-    *rows.map.with_index { |row, y| [row.index(ROBOT), y] }
-         .reject { |cs| cs.first.nil? }
-         .flatten
+    *rows.map.with_index { |row, y| { x: row.index(ROBOT), y: y } }
+         .reject { |c| c[:x].nil? }
+         .map { |c| [c[:x], c[:y]] }
+         .first
   )
 
   {
