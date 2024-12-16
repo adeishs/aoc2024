@@ -20,7 +20,7 @@ def solve(r_loc, r_dir, dist, step_cnt, tiles, start_loc, visiteds, loc_dist)
   path = Set[r_loc]
   return [dist, path, visiteds, loc_dist] if obj_at?(tiles, r_loc, END_TILE)
 
-  DIRS.reject { |d| d == -r_dir }.each do |d|
+  (DIRS - [-r_dir]).each do |d|
     nd = r_loc + d
     return [dist + 1, path, visiteds, loc_dist] if obj_at?(tiles, nd, END_TILE)
 
