@@ -63,7 +63,6 @@ path_locs.each.with_index do |loc0, i0|
     saved = i1 - i0
 
     diff = Complex((loc0.real - loc1.real).abs, (loc0.imag - loc1.imag).abs)
-    next unless diff.real.zero? || diff.imag.zero?
 
     man_dist = diff.rect.sum
     next unless man_dist <= 2
