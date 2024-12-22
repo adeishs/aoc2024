@@ -23,7 +23,7 @@ NUMPAD_U_MVT = { 'A0' => '<' }.merge(
         [1, 4, 7].each do |s|
           if t > s
             u = (t - s) / 3
-            ms += ["#{s}#{t}", (['^'] * u + (['>'] * ((t + 2) % 3))).join]
+            ms += ["#{s}#{t}", ((['>'] * ((t + 2) % 3)) + ['^'] * u).join]
           end
         end
 
@@ -39,7 +39,7 @@ NUMPAD_U_MVT = { 'A0' => '<' }.merge(
           l = (t % 3).zero? ? -1 : (2 - (t % 3))
           ms += [
             "#{s}#{t}",
-            (['^'] * u + (l.positive? ? (['<'] * l) : (['>'] * -l))).join
+            ((l.positive? ? (['<'] * l) : (['>'] * -l)) + ['^'] * u).join
           ]
         end
 
@@ -54,7 +54,7 @@ NUMPAD_U_MVT = { 'A0' => '<' }.merge(
           u = (t - s + 2) / 3
           ms += [
             "#{s}#{t}",
-            (['^'] * u + (['<'] * ((t % 3).zero? ? 0 : 3 - (t % 3)))).join
+            ((['<'] * ((t % 3).zero? ? 0 : 3 - (t % 3))) + ['^'] * u).join
           ]
         end
 
@@ -82,11 +82,11 @@ DIRPAD_D_MVT = {
   '>>' => '',
   'A^' => '<',
   'A<' => 'v<<',
-  'Av' => 'v<',
+  'Av' => '<v',
   'A>' => 'v',
   '^<' => 'v<',
   '^v' => 'v',
-  '^>' => 'v>',
+  '^>' => '>v',
   '><' => '<<',
   '>v' => '<',
   'v<' => '<'
@@ -115,9 +115,10 @@ def solve_mvt(code, numpad_mvt)
 end
 
 def solve(code)
+  num = code[0...-1].to_i
   code = solve_mvt(code, NUMPAD_MVT)
   2.times { code = solve_mvt(code, DIRPAD_MVT) }
-  code
+  code.size * num
 end
 
-puts($stdin.each_line.map { |c| "#{c.chomp}: " + solve(c.chomp) })
+puts $stdin.each_line.map { |c| solve(c.chomp) }.sum
