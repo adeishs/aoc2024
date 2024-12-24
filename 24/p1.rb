@@ -7,6 +7,8 @@ OP_MAP = {
   'XOR' => '^'
 }.freeze
 
+OPERAND_IDXS = [0, 2].freeze
+
 def parse(input)
   init_str, gates_str = input.split("\n\n")
 
@@ -34,10 +36,10 @@ end
 def run(prog)
   until prog[:gate_ops].empty?
     gos = prog[:gate_ops].shift
-    if gos[0].is_a?(Integer) && gos[2].is_a?(Integer)
+    if OPERAND_IDXS.all? { |i| gos[i].is_a?(Integer) }
       prog[:wire_val][gos[3]] = gos[0].send(gos[1], gos[2])
     else
-      [0, 2].each do |i|
+      OPERAND_IDXS.each do |i|
         gos[i] = prog[:wire_val][gos[i]] unless prog[:wire_val][gos[i]].nil?
       end
       prog[:gate_ops] << gos
