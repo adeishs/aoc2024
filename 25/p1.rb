@@ -18,11 +18,10 @@ def parse(input)
   input.split("\n\n")
        .map { |s| ident(s.split.map { |l| l.chars.map { |t| TILE_VAL[t] } }) }
        .partition { |s| s[:type] == :lock }
-       .map { |ss| ss.map { |s| s[:heights] } }
 end
 
 locks, keys = parse($stdin.read)
 puts locks.product(keys)
-          .map { |lhs, khs| lhs.zip(khs).map(&:sum) }
+          .map { |lhs, khs| lhs[:heights].zip(khs[:heights]).map(&:sum) }
           .select { |hs| hs.all? { |h| h <= WIDTH } }
           .size
